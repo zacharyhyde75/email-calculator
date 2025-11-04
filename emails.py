@@ -236,3 +236,7 @@ with mcol3:
         st.warning("With these assumptions, the new strategy doesn't beat the current one.")
 
 st.markdown("---")
+st.caption(
+    "If you'd like to talk through these numbers and your options, "
+    "send an email to zachary@zacharyhydewriter.com for a free consultation."
+)
