@@ -57,37 +57,41 @@ st.write(
 
 st.markdown("---")
 
-# Sidebar: global assumptions
-st.sidebar.header("Global Assumptions")
+# ---------- Global Assumptions at the top ----------
 
-list_size = st.sidebar.number_input(
-    "List size (subscribers)",
-    min_value=1,
-    value=500_000,
-    step=10_000
-)
+st.markdown("### ⚙️ Global Assumptions")
 
-avg_order_value = st.sidebar.number_input(
-    "Average order value ($)",
-    min_value=1.0,
-    value=97.0,
-    step=1.0
-)
+with st.expander("Edit assumptions (tap to expand)", expanded=True):
+    list_size = st.number_input(
+        "List size (subscribers)",
+        min_value=1,
+        value=500_000,
+        step=10_000
+    )
 
-gross_margin_pct = st.sidebar.slider(
-    "Gross margin (%)",
-    min_value=10,
-    max_value=100,
-    value=60,
-    step=5
-)
+    avg_order_value = st.number_input(
+        "Average order value ($)",
+        min_value=1.0,
+        value=97.0,
+        step=1.0
+    )
+
+    gross_margin_pct = st.slider(
+        "Gross margin (%)",
+        min_value=10,
+        max_value=100,
+        value=60,
+        step=5
+    )
+
 gross_margin = gross_margin_pct / 100
 
-st.sidebar.markdown("---")
-st.sidebar.caption("Adjust these to match a specific brand or portfolio.")
+st.caption("Adjust these to match a specific brand or portfolio.")
 
+st.markdown("---")
 
-# Columns for current vs new (e.g. daily)
+# ---------- Current vs New Strategy Inputs ----------
+
 col1, col2 = st.columns(2)
 
 with col1:
@@ -102,7 +106,7 @@ with col1:
     )
 
     current_open_rate = st.slider(
-        "Open rate (%)",
+        "Open rate (%) – current",
         min_value=1,
         max_value=100,
         value=22,
@@ -110,7 +114,7 @@ with col1:
     ) / 100
 
     current_click_rate = st.slider(
-        "Click-through (% of opens)",
+        "Click-through (% of opens) – current",
         min_value=1,
         max_value=100,
         value=6,
@@ -118,7 +122,7 @@ with col1:
     ) / 100
 
     current_conversion_rate = st.slider(
-        "Conversion rate (% of clicks)",
+        "Conversion rate (% of clicks) – current",
         min_value=1,
         max_value=100,
         value=3,
@@ -139,7 +143,7 @@ with col2:
     st.caption("You can deliberately **handicap** these rates to be *worse* than current.")
 
     new_open_rate = st.slider(
-        "Open rate (%)",
+        "Open rate (%) – new",
         min_value=1,
         max_value=100,
         value=20,
@@ -147,7 +151,7 @@ with col2:
     ) / 100
 
     new_click_rate = st.slider(
-        "Click-through (% of opens)",
+        "Click-through (% of opens) – new",
         min_value=1,
         max_value=100,
         value=5,
@@ -155,14 +159,15 @@ with col2:
     ) / 100
 
     new_conversion_rate = st.slider(
-        "Conversion rate (% of clicks)",
+        "Conversion rate (% of clicks) – new",
         min_value=1,
         max_value=100,
         value=2,
         key="new_conv"
     ) / 100
 
-# Create scenarios
+# ---------- Create scenarios & compute metrics ----------
+
 current = EmailScenario(
     name="Current",
     list_size=list_size,
@@ -187,6 +192,8 @@ new = EmailScenario(
 
 cur = current.yearly_metrics()
 n = new.yearly_metrics()
+
+# ---------- Output: Yearly Impact ----------
 
 st.markdown("---")
 st.header("Yearly Impact")
@@ -217,10 +224,10 @@ with mcol3:
     rev_diff = n["revenue"] - cur["revenue"]
     prof_diff = n["profit"] - cur["profit"]
 
-    st.write(f"**Extra revenue / year:**")
+    st.write("**Extra revenue / year:**")
     st.markdown(f"### ${fmt(rev_diff)}")
 
-    st.write(f"**Extra profit / year:**")
+    st.write("**Extra profit / year:**")
     st.markdown(f"### ${fmt(prof_diff)}")
 
     if rev_diff > 0:
@@ -229,7 +236,3 @@ with mcol3:
         st.warning("With these assumptions, the new strategy doesn't beat the current one.")
 
 st.markdown("---")
-st.caption(
-    "Tip: Show this with conservative, handicapped assumptions for the new strategy "
-    "to make the upside look even more undeniable."
-)
